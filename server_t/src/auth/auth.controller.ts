@@ -4,31 +4,41 @@ import {
   ConflictException,
   Controller,
   InternalServerErrorException,
-  NotFoundException,
   Post,
+  Req,
+  UnauthorizedException,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { RegistrationDto } from './dto/registration.dto';
-
+import * as bcrypt from 'bcrypt';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtService } from '@nestjs/jwt';
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
 
   @Post('/login')
   @UsePipes(new ValidationPipe())
   async logIn(@Body() authCredentialsDto: AuthCredentialsDto): Promise<any> {
-    const { email } = authCredentialsDto;
+    const { email, password } = authCredentialsDto;
     const user: User = await this.authService.getUser({ email });
-    if (user) {
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const accessToken: string = this.jwtService.sign({ email });
       return {
         id: user.id,
         username: user.username,
+        email: user.email,
+        accessToken,
       };
     } else {
-      throw new NotFoundException();
+      throw new UnauthorizedException();
     }
   }
 
@@ -51,5 +61,11 @@ export class AuthController {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  @Post('/test')
+  @UseGuards(AuthGuard())
+  test(@Req() req) {
+    console.log(req);
   }
 }

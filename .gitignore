@@ -1,2 +1,3 @@
 /server_t/node_modules
 /server_t/dist
+/server_t/.env

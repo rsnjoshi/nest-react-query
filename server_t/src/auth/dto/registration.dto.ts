@@ -10,7 +10,7 @@ export class RegistrationDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(4)
-  @MaxLength(8)
+  @MaxLength(12)
   username: string;
 
   @IsNotEmpty()

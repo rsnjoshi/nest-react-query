@@ -17,4 +17,14 @@ model User {
   lastName  String
   username  String
   password  String
+  todos     Todo[]
+}
+
+model Todo {
+  id           Int    @id @default(autoincrement())
+  title        String
+  fileLocation String
+  status       String
+  user         User?  @relation(fields: [userId], references: [id])
+  userId       Int?
 }

@@ -1,3 +1,4 @@
+import { Task } from '.prisma/client';
 import {
   Body,
   Controller,
@@ -13,19 +14,25 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreateTodoDto } from './dto/createtodo.dto';
 import { UpdateStatusDto } from './dto/updatestatus.dto';
 import { UpdateTodoDto } from './dto/updatetodo.dto';
+import { TodoService } from './todo.service';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TodoController {
+  constructor(private todoService: TodoService) {}
+
   @Get()
   getAllTask(): string {
     return 'all todo';
   }
 
   @Post()
-  createTask(@Body() data: CreateTodoDto): string {
-    console.log(data);
-    return 'created';
+  async createTask(@Body() data: CreateTodoDto): Promise<Task> {
+    const payload = {
+      ...data,
+      delete: false,
+    };
+    return this.todoService.createTodo(payload);
   }
 
   @Put('/:id')

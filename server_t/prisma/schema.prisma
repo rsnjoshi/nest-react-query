@@ -14,7 +14,7 @@ model User {
   lastName  String
   username  String
   password  String
-  todos     Task[]
+  task     Task[]
 }
 
 model Task {

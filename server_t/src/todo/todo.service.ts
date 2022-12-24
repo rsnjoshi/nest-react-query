@@ -1,12 +1,23 @@
-import { Prisma, Task } from '@prisma/client';
+import { Prisma, Task, User } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/services/prisma.service';
+import { CreateTodoDto } from './dto/createtodo.dto';
 
 @Injectable()
 export class TodoService {
   constructor(private prisma: PrismaService) {}
 
-  async createTodo(data: Prisma.TaskCreateInput): Promise<Task> {
+  async createTodo(payload: CreateTodoDto): Promise<Task> {
+    const data: Prisma.TaskCreateInput = {
+      title: payload.title,
+      status: payload.status,
+      description: payload.description,
+      fileLocation: payload.fileLocation,
+      delete: false,
+      user: {
+        connect: { id: +payload.userId },
+      },
+    };
     return this.prisma.task.create({
       data,
     });

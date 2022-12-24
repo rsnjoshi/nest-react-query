@@ -7,23 +7,13 @@ import { CreateTodoDto } from './dto/createtodo.dto';
 export class TodoService {
   constructor(private prisma: PrismaService) {}
 
-  async createTodo(payload: CreateTodoDto): Promise<Task> {
-    const data: Prisma.TaskCreateInput = {
-      title: payload.title,
-      status: payload.status,
-      description: payload.description,
-      fileLocation: payload.fileLocation,
-      delete: false,
-      user: {
-        connect: { id: +payload.userId },
-      },
-    };
+  async createTodo(data: Prisma.TaskCreateInput): Promise<Task> {
     return this.prisma.task.create({
       data,
     });
   }
 
-  async getTodo(where: Prisma.TaskWhereInput): Promise<Task[]> {
+  async getAllTodo(where: Prisma.TaskWhereInput): Promise<Task[]> {
     return this.prisma.task.findMany({
       where,
     });

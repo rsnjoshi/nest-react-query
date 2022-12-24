@@ -1,4 +1,4 @@
-import { User } from '.prisma/client';
+import { User } from '@prisma/client';
 import {
   Body,
   ConflictException,
@@ -8,8 +8,6 @@ import {
   Req,
   UnauthorizedException,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
@@ -25,7 +23,6 @@ export class AuthController {
   ) {}
 
   @Post('/login')
-  @UsePipes(new ValidationPipe())
   async logIn(@Body() authCredentialsDto: AuthCredentialsDto): Promise<any> {
     const { email, password } = authCredentialsDto;
     const user: User = await this.authService.getUser({ email });
@@ -43,7 +40,6 @@ export class AuthController {
   }
 
   @Post('/signUp')
-  @UsePipes(new ValidationPipe())
   async signUp(@Body() registrationDto: RegistrationDto): Promise<any> {
     try {
       const user: User = await this.authService.addUser(registrationDto);

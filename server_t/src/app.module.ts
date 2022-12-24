@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './services/prisma.service';
+import { TodoModule } from './todo/todo.module';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, TodoModule],
   controllers: [],
   providers: [PrismaService],
   exports: [],

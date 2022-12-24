@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,14 +14,16 @@ model User {
   lastName  String
   username  String
   password  String
-  todos     Todo[]
+  todos     Task[]
 }
 
-model Todo {
-  id           Int    @id @default(autoincrement())
+model Task {
+  id           Int     @id @default(autoincrement())
   title        String
-  fileLocation String
+  fileLocation String?
+  description  String
   status       String
-  user         User?  @relation(fields: [userId], references: [id])
   userId       Int?
+  delete       Boolean
+  user         User?   @relation(fields: [userId], references: [id])
 }

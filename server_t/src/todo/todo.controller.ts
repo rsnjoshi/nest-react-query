@@ -5,15 +5,12 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Put,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateTodoDto } from './dto/createtodo.dto';
-import { UpdateStatusDto } from './dto/updatestatus.dto';
 import { UpdateTodoDto } from './dto/updatetodo.dto';
 import { TaskList } from './interface/taskList.interface';
 import { TodoService } from './todo.service';

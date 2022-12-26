@@ -19,11 +19,10 @@ export default {
 
   getUserInfo: (): UserInfo => {
     return {
-      firstName: localStorage.getItem("firstName") || "",
-      lastName: localStorage.getItem("lastName") || "",
+      id: localStorage.getItem("id") || "",
       email: localStorage.getItem("email") || "",
       username: localStorage.getItem("username") || "",
-      sessionToken: localStorage.getItem("sessionToken") || "",
+      accessToken: localStorage.getItem("accessToken") || "",
     };
   },
 

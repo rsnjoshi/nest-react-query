@@ -1,14 +1,12 @@
 export interface UserInfo {
-  firstName: string;
-  lastName: string;
+  id: string;
   username: string;
   email: string;
-  sessionToken: string;
+  accessToken: string;
 };
 
 export type UserField =
-  | "firstName"
-  | "lastName"
+  | "id"
   | "username"
   | "email"
-  | "sessionToken";
+  | "accessToken";

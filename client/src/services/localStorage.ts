@@ -13,8 +13,8 @@ export default {
   },
 
   isLoggedIn: (): boolean => {
-    if (localStorage.getItem("sessionToken")) return true;
-    else return false;
+    if (localStorage.getItem("accessToken")) return true;
+    return false;
   },
 
   getUserInfo: (): UserInfo => {

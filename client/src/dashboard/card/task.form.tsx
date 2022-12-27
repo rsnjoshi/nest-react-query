@@ -56,7 +56,7 @@ export default function TaskForm(props: TaskFormDataProps) {
 
     return (
         <div className="relative items-center flex-row justify-between px-2 py-6 border-b">
-            <div className="border-b border-cyan-300">
+            <div className="my-2">
                 <input type="text" placeholder="Title"
                     className="w-full px-2 py-3 border rounded outline-none border-grey-600" value={task.title || ''} onChange={updateTitle} />
             </div>

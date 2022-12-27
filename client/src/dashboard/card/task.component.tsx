@@ -44,14 +44,14 @@ export default function Card(props: TaskState) {
             }
             {
                 !createTaskFlag &&
-                <div className="relative items-center flex-row justify-between px-2 py-6 border-b">
+                <div className="relative items-center flex-row justify-between px-2 py-6 border my-2 border-cyan-300 rounded-lg">
                     <div className="border-b border-cyan-300">
-                        <p className="inline-block mt-1 text-gray-600">{props.title}</p>
+                        <p className="inline-block mt-1 text-gray-600 font-bold capitalize">{props.title}</p>
                     </div>
                     <div className="my-2">
                         <p className="inline-block mt-1 text-gray-600">{props.description}</p>
                     </div>
-                    <div className=" flex items-center justify-end">
+                    <div className=" flex items-center justify-end mt-2">
                         {
                             !props.isComplete &&
                             <>

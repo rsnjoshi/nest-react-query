@@ -8,10 +8,12 @@ type TaskState = {
 
 export default function TaskForm(props: TaskFormDataProps) {
 
-    const [task, setTask] = useState<TaskState>({
+    const initialSetTaskState = {
         title: props.title,
         description: props.description,
-    })
+    }
+
+    const [task, setTask] = useState<TaskState>(initialSetTaskState)
 
     const updateTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTask({
@@ -45,7 +47,8 @@ export default function TaskForm(props: TaskFormDataProps) {
                     userId: props.userId,
                 })
         }
-        props.onSubmit()
+        setTask(initialSetTaskState)
+        props.onSubmit(props.forEdit)
     }
 
 

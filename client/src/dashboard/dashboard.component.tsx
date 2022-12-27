@@ -10,7 +10,14 @@ import TaskForm from "./card/task.form"
 function DashboardComponent() {
     const [completedTask, setCompletedTask] = useState<TaskState[]>([])
     const [todoTask, setTodoTask] = useState<TaskState[]>([])
+    const [createTaskFlag, setCreateTaskFlag] = useState<boolean>(false)
     const navigate = useNavigate()
+    const createFlagOn = () => {
+        setCreateTaskFlag(true)
+    }
+    const createFlagOff = () => {
+        setCreateTaskFlag(false)
+    }
     const logOut = () => {
         localStorage.logOut()
         navigate('/login')
@@ -19,25 +26,30 @@ function DashboardComponent() {
     useEffect(() => {
         if (!localStorage.isLoggedIn()) navigate('/login')
         else {
-            getItems()
+            getItems(false)
         }
     }, [])
 
-    const getItems = async () => {
+    const getItems = async (fromEdit: boolean) => {
         const response = await axios.get<TaskResponse>(`${SERVER_URL}/tasks/${id}`)
         const { complete, notStarted } = response.data
         const completeState: TaskState[] = complete.map(task => ({
             ...task,
-            isEdit: false,
+            // isEdit: false,
+            onSubmit: getItems,
             isComplete: true,
         }))
         const notStartedState: TaskState[] = notStarted.map(task => ({
             ...task,
-            isEdit: false,
+            // isEdit: false,
+            onSubmit: getItems,
             isComplete: false,
         }))
+        completeState.reverse()
+        notStartedState.reverse()
         setCompletedTask(completeState)
         setTodoTask(notStartedState)
+        if (!fromEdit) createFlagOff()
     }
 
     return (
@@ -73,23 +85,29 @@ function DashboardComponent() {
                             <h1 className="mr-6 text-4xl font-bold text-purple-600"> TODO</h1>
                         </div>
                         <div className="relative">
-                            <input type="text" placeholder="What needs to be done today?"
-                                className="w-full px-2 py-3 border rounded outline-none border-grey-600"
-                                onClick={() => { }}
-                            />
-                            <TaskForm
-                                title= {null}
-                                description= {null}
-                                userId= {id}
-                                forEdit= {false}
-                                onSubmit={()=>{}}
-                                onCancel={()=>{}}
-                            />
+                            {
+                                createTaskFlag &&
+                                <TaskForm
+                                    title={null}
+                                    description={null}
+                                    userId={id}
+                                    forEdit={false}
+                                    onSubmit={getItems}
+                                    onCancel={createFlagOff}
+                                />
+                            }
+                            {
+                                !createTaskFlag &&
+                                <input type="text" placeholder="What needs to be done today?"
+                                    className="w-full px-2 py-3 border rounded outline-none border-grey-600"
+                                    onClick={createFlagOn}
+                                />
+                            }
                         </div>
                         {
-                            todoTask.map((task, i) => (<Card key={`todo-component-${i}`}{...task}/>))
+                            todoTask.map((task, i) => (<Card key={`todo-component-${i}`}{...task} />))
                         }
-                        
+
                     </div>
                 </div>
                 <div className="flex justify-center self-start w-6/12 mx-3">
@@ -98,7 +116,7 @@ function DashboardComponent() {
                             <h1 className="mr-6 text-4xl font-bold text-purple-600"> COMPLETE</h1>
                         </div>
                         {
-                            completedTask.map((task, i) => (<Card key={`completed-component-${i}`}{...task}/>))
+                            completedTask.map((task, i) => (<Card key={`completed-component-${i}`}{...task} />))
                         }
                     </div>
                 </div>

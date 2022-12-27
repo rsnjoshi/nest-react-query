@@ -56,28 +56,69 @@ function RegisterComponent() {
     }
 
     return (
-        <div>
-            <h1>Register User</h1>
-            <br />
-            <h4>First Name</h4>
-            <input id='register-firstName' className="border-2 border-r-2 border-fuchsia-500" type="text" onChange={changeRegisterData}/>
-            <h4>Last Name</h4>
-            <input id='register-lastName' className="border-2 border-r-2 border-fuchsia-500" type="text" onChange={changeRegisterData}/>
-            <h4>Email</h4>
-            <input id='register-email' className="border-2 border-r-2 border-fuchsia-500" type="text" onChange={changeRegisterData}/>
-            <h4>Username</h4>
-            <input id='register-username' className="border-2 border-r-2 border-fuchsia-500" type="text" onChange={changeRegisterData}/>
-            <h4>Password</h4>
-            <input id='register-password' className="border-2 border-r-2 border-fuchsia-500" type="password" onChange={changeRegisterData}/>
-            <h4>Confirm Password</h4>
-            <input id='register-confirmPassword' className="border-2 border-r-2 border-fuchsia-500" type="password" onChange={changeRegisterData}/>
-            <br />
-            {
-                !valid &&
-                <h6 className='text-red-600'>*Invalid Inputs</h6>
-            }
-            <br />
-            <button onClick={register}>Register</button>
+        <div className="bg-grey-lighter min-h-screen flex flex-col">
+            <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
+                <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+                    <h1 className="mb-8 text-3xl text-center">Sign up</h1>
+                    <input 
+                        type="text"
+                        className="block border border-grey-light w-full p-3 rounded mb-4"
+                        id='register-email'
+                        onChange={changeRegisterData}
+                        placeholder="Email" />
+
+                    <input 
+                        type="text"
+                        className="block border border-grey-light w-full p-3 rounded mb-4"
+                        id='register-firstName'
+                        onChange={changeRegisterData}
+                        placeholder="First Name" />
+
+                    <input 
+                        type="text"
+                        className="block border border-grey-light w-full p-3 rounded mb-4"
+                        id='register-lastName'
+                        onChange={changeRegisterData}
+                        placeholder="Last Name" />
+
+                    <input 
+                        type="text"
+                        className="block border border-grey-light w-full p-3 rounded mb-4"
+                        id='register-username'
+                        onChange={changeRegisterData}
+                        placeholder="Username" />
+
+                    <input 
+                        type="password"
+                        className="block border border-grey-light w-full p-3 rounded mb-4"
+                        id='register-password'
+                        onChange={changeRegisterData}
+                        placeholder="Password" />
+                    <input 
+                        type="password"
+                        className="block border border-grey-light w-full p-3 rounded mb-4"
+                        id='register-confirmPassword'
+                        onChange={changeRegisterData}
+                        placeholder="Confirm Password" />
+                    {
+                        !valid &&
+                        <p className="text-red-500 text-xs italic">*Invalid Input.</p>
+                    }
+
+                    <button
+                        className="w-full text-center py-3 rounded bg-green-700 text-white hover:bg-green-dark focus:outline-none my-1"
+                        onClick={register}
+                    >Create Account</button>
+
+                </div>
+
+                <div className="text-grey-dark mt-6">
+                    Already have an account? 
+                    <a className="underline border-b border-blue text-blue hover:cursor-pointer hover:text-blue-600" onClick={() => navigate('/login')}>
+                        Log in
+                    </a>.
+                </div>
+            </div>
         </div>
     )
 }

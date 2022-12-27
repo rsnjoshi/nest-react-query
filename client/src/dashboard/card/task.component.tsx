@@ -1,6 +1,6 @@
-import { Task } from "../task.type";
+import { TaskState } from "../task.type";
 
-export default function Card(props: Task) {
+export default function Card(props: TaskState) {
     return (
         <>
             <div className="relative items-center flex-row justify-between px-2 py-6 border-b">
@@ -11,17 +11,21 @@ export default function Card(props: Task) {
                     <p className="inline-block mt-1 text-gray-600">{props.description}</p>
                 </div>
                 <div className=" flex items-center justify-end">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mx-1">
-                        Edit
-                    </button>
-                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mx-1">
-                        Complete
-                    </button>
+                    {
+                        !props.isComplete &&
+                        <>
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mx-1">
+                                Edit
+                            </button>
+                            <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mx-1">
+                                Complete
+                            </button>
+                        </>
+                    }
                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded mx-1">
                         Delete
                     </button>
                 </div>
-
             </div>
         </>
     )

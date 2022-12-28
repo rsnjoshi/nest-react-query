@@ -2,7 +2,7 @@ import { useState } from "react"
 import { RegisterData, RegisterKey } from "./register.type"
 import axios, { SERVER_URL } from "../api/http"
 import { useNavigate } from "react-router-dom"
-
+import { useMutation } from "react-query"
 function RegisterComponent() {
     const navigate = useNavigate()
     const [data, setData] = useState<RegisterData>({
@@ -23,25 +23,6 @@ function RegisterComponent() {
         setData(state);
     })
     
-    const save = async () => {
-        const payload = {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            username: data.username,
-            password: data.password,
-            email: data.email,
-        }
-        const response = await axios.post(`${SERVER_URL}/auth/signUp`, payload)
-        navigate('/login')
-    }
-    const register = () => {
-        if (!validate()) setValid(false)
-        else {
-            setValid(true)
-            save()
-        }
-    }
-
     const validate = (): boolean => {
         if (
             data.firstName
@@ -55,46 +36,75 @@ function RegisterComponent() {
         return false;
     }
 
+    const createUser = async (data: RegisterData) => {
+        const payload = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            username: data.username,
+            password: data.password,
+            email: data.email,
+        }
+        const response = await axios.post(`${SERVER_URL}/auth/signUp`, payload)
+        return response.data
+    }
+
+    const { mutate } = useMutation<unknown, unknown, RegisterData>(createUser, {
+        onSuccess: () => {
+            navigate('/login')
+        },
+        onError: () => {
+            setValid(false)
+        },
+    })
+
+    const register = () => {
+        if (!validate()) setValid(false)
+        else {
+            setValid(true)
+            mutate(data)
+        }
+    }
+
     return (
         <div className="bg-grey-lighter min-h-screen flex flex-col">
             <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
                 <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
                     <h1 className="mb-8 text-3xl text-center">Sign up</h1>
-                    <input 
+                    <input
                         type="text"
                         className="block border border-grey-light w-full p-3 rounded mb-4"
                         id='register-email'
                         onChange={changeRegisterData}
                         placeholder="Email" />
 
-                    <input 
+                    <input
                         type="text"
                         className="block border border-grey-light w-full p-3 rounded mb-4"
                         id='register-firstName'
                         onChange={changeRegisterData}
                         placeholder="First Name" />
 
-                    <input 
+                    <input
                         type="text"
                         className="block border border-grey-light w-full p-3 rounded mb-4"
                         id='register-lastName'
                         onChange={changeRegisterData}
                         placeholder="Last Name" />
 
-                    <input 
+                    <input
                         type="text"
                         className="block border border-grey-light w-full p-3 rounded mb-4"
                         id='register-username'
                         onChange={changeRegisterData}
                         placeholder="Username" />
 
-                    <input 
+                    <input
                         type="password"
                         className="block border border-grey-light w-full p-3 rounded mb-4"
                         id='register-password'
                         onChange={changeRegisterData}
                         placeholder="Password" />
-                    <input 
+                    <input
                         type="password"
                         className="block border border-grey-light w-full p-3 rounded mb-4"
                         id='register-confirmPassword'
@@ -113,7 +123,7 @@ function RegisterComponent() {
                 </div>
 
                 <div className="text-grey-dark mt-6">
-                    Already have an account? 
+                    Already have an account?
                     <a className="underline border-b border-blue text-blue hover:cursor-pointer hover:text-blue-600" onClick={() => navigate('/login')}>
                         Log in
                     </a>.

@@ -6,51 +6,63 @@ import { UserInfo } from "../services/userInfo"
 import Card from "./card/task.component"
 import { Task, TaskResponse, TaskState } from "./task.type"
 import TaskForm from "./card/task.form"
+import { useQuery } from "react-query"
 
 function DashboardComponent() {
-    const [completedTask, setCompletedTask] = useState<TaskState[]>([])
-    const [todoTask, setTodoTask] = useState<TaskState[]>([])
+    const { id, username, email } = localStorage.getUserInfo()
     const [createTaskFlag, setCreateTaskFlag] = useState<boolean>(false)
+
     const navigate = useNavigate()
+
     const createFlagOn = () => {
         setCreateTaskFlag(true)
     }
+
     const createFlagOff = () => {
         setCreateTaskFlag(false)
     }
+
     const logOut = () => {
         localStorage.logOut()
         navigate('/login')
     }
-    const { id, username, email } = localStorage.getUserInfo()
-    useEffect(() => {
-        if (!localStorage.isLoggedIn()) navigate('/login')
-        else {
-            getItems(false)
-        }
-    }, [])
 
-    const getItems = async (fromEdit: boolean) => {
+    const fetchItems = async () => {
         const response = await axios.get<TaskResponse>(`${SERVER_URL}/tasks/${id}`)
         const { complete, notStarted } = response.data
         const completeState: TaskState[] = complete.map(task => ({
             ...task,
             // isEdit: false,
-            onSubmit: getItems,
             isComplete: true,
         }))
         const notStartedState: TaskState[] = notStarted.map(task => ({
             ...task,
             // isEdit: false,
-            onSubmit: getItems,
             isComplete: false,
         }))
         completeState.reverse()
         notStartedState.reverse()
-        setCompletedTask(completeState)
-        setTodoTask(notStartedState)
+        return {
+            completedTask: completeState,
+            todoTask: notStartedState,
+        }
+    }
+
+    const { data, isSuccess, isLoading, isError, refetch } = useQuery<{
+        completedTask: TaskState[],
+        todoTask: TaskState[],
+    }>('tasks', fetchItems)
+
+    const onSubmit = async (fromEdit: boolean) => {
+        await refetch({
+            throwOnError: true,
+        })
         if (!fromEdit) createFlagOff()
     }
+
+    useEffect(() => {
+        if (!localStorage.isLoggedIn()) navigate('/login')
+    }, [])
 
     return (
         <div>
@@ -93,7 +105,7 @@ function DashboardComponent() {
                                     description={null}
                                     userId={id}
                                     forEdit={false}
-                                    onSubmit={getItems}
+                                    onSubmit={onSubmit}
                                     onCancel={createFlagOff}
                                 />
                             }
@@ -106,7 +118,13 @@ function DashboardComponent() {
                             }
                         </div>
                         {
-                            todoTask.map((task, i) => (<Card key={`todo-component-${i}`}{...task} />))
+                            data?.todoTask.map((task, i) => {
+                                const newTask = {
+                                    ...task,
+                                    onSubmit
+                                }
+                                return <Card key={`todo-component-${i}`} {...newTask} />
+                            })
                         }
 
                     </div>
@@ -117,7 +135,13 @@ function DashboardComponent() {
                             <h4 className="mr-6 text-2xl font-bold text-green-600"> COMPLETE</h4>
                         </div>
                         {
-                            completedTask.map((task, i) => (<Card key={`completed-component-${i}`}{...task} />))
+                            data?.completedTask.map((task, i) => {
+                                const newTask = {
+                                    ...task,
+                                    onSubmit
+                                }
+                                return <Card key={`completed-component-${i}`} {...newTask} />
+                            })
                         }
                     </div>
                 </div>

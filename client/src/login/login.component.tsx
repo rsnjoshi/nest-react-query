@@ -93,7 +93,6 @@ function LoginComponent() {
                         Create Account?
                     </a>
                 </div>
-                <Spinner></Spinner>
             </form>
         </div>
     )

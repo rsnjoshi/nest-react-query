@@ -19,7 +19,7 @@ export type TaskFormDataProps = {
     userId: string,
     forEdit: boolean,
     id?: string,
-    onSubmit: (fromEdit: boolean) => void,
+    onSubmit?: (fromEdit: boolean) => void,
     onCancel: () => void,
 }
 
@@ -40,5 +40,5 @@ export type ComponentState = {
 export type TaskState = Task & { 
     // isEdit: boolean,
     isComplete: boolean,
-    onSubmit: (fromEdit: boolean) => void,
+    onSubmit?: (fromEdit: boolean) => void,
 }

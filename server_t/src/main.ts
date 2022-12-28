@@ -14,10 +14,10 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Todo Complete API')
-    .setDescription('The TODO application API format')
+    .setTitle('Todo REST API')
+    .setDescription('Complete available apis for TODO app')
     .setVersion('1.0')
-    .addTag('todo')
+    .addTag('REST-API')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -3,6 +3,7 @@ import { TaskState } from "../task.type";
 import TaskForm from "./task.form";
 
 import axios, { SERVER_URL } from "../../api/http"
+import { useMutation } from "react-query";
 
 export default function Card(props: TaskState) {
     const [createTaskFlag, setCreateTaskFlag] = useState<boolean>(false)
@@ -12,22 +13,48 @@ export default function Card(props: TaskState) {
     const createFlagOff = () => {
         setCreateTaskFlag(false)
     }
+
+    const afterSubmit = () => {
+        if (props.onSubmit) props.onSubmit(true)
+    }
+
     const onSubmit = () => {
-        props.onSubmit(true)
+        afterSubmit()
         createFlagOff()
     }
-    const updateStatus = async () => {
-        await axios.put(`${SERVER_URL}/tasks/${props.id}`,
-            {
-                status: 'COMPLETED'
+    
+    const updateCard = async (isDelete: boolean) => {
+        try {
+            if (isDelete) {
+                const response = await axios.delete(`${SERVER_URL}/tasks/${props.id}`)
+                return response.data
+            } else {
+                const response = await axios.put(`${SERVER_URL}/tasks/${props.id}`,
+                    {
+                        status: 'COMPLETED'
+                    }
+                )
+                return response.data
             }
-        );
-        props.onSubmit(true)
+        } catch(err) {
+            throw new Error('Something went wrong')
+        }
     }
-    const deleteTask = async () => {
-        await axios.delete(`${SERVER_URL}/tasks/${props.id}`)
-        props.onSubmit(true)
+
+
+    const { mutate } = useMutation(updateCard, {
+        onSuccess: () => {
+            afterSubmit()
+        }
+    })
+
+    const updateStatus = () => {
+        mutate(false)
     }
+    const deleteTask = () => {
+        mutate(true)
+    }
+
     return (
         <>
             {
@@ -44,14 +71,14 @@ export default function Card(props: TaskState) {
             }
             {
                 !createTaskFlag &&
-                <div className="relative items-center flex-row justify-between px-2 py-6 border-b">
+                <div className="relative items-center flex-row justify-between px-2 py-6 border my-2 border-cyan-300 rounded-lg">
                     <div className="border-b border-cyan-300">
-                        <p className="inline-block mt-1 text-gray-600">{props.title}</p>
+                        <p className="inline-block mt-1 text-gray-600 font-bold capitalize">{props.title}</p>
                     </div>
                     <div className="my-2">
                         <p className="inline-block mt-1 text-gray-600">{props.description}</p>
                     </div>
-                    <div className=" flex items-center justify-end">
+                    <div className=" flex items-center justify-end mt-2">
                         {
                             !props.isComplete &&
                             <>
